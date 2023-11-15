@@ -30,6 +30,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 #Problem 2
+
 Import data and iterate over file names and read in data
 ```{r,show_col_types = FALSE}
 hw5_data=
@@ -79,7 +80,9 @@ arm_data|>
 There appears an general increasing trend in arm values over 8 weeks in experiment group. In contrast, there is no clear pattern of arm values for each subject over 8 weeks in control group. Moreover, the largest arm value in control group is below 5.
 
 
+
 #Problem 3
+
 Generate 5000 datasets from the model
 ```{r}
 set.seed(1)
@@ -117,6 +120,7 @@ There is a positive association between effect size and power. Specfically, when
 
 
 Make a plot showing the average estimate of mu on the y axis and the true value of mu on the x axis. Overlay on the first the average estimate of mu only in samples for which the null was rejected on the y axis and the true value of mu on the x axis.
+
 ```{r}
 estimate_plot <- proportion_results|>
   ggplot(aes(x=mu)) + 
@@ -130,5 +134,6 @@ estimate_plot <- proportion_results|>
 
 estimate_plot
 ```
+
 
 The sample average of mu_hat across tests for which the null is rejected is not approximately equal to the true value of mu. Specifically, the estimated estimated mean is higher than the true mean when the null hypothesis is rejected. This might be attributed to overestimate of effect size because of random sampling variability. 
