@@ -113,4 +113,21 @@ plot = proportion_results|>
 plot
 ```
 
+There is a positive association between effect size and power. Specfically, when the true mean increases from 0 to 6, the power of the test also increases. The power of the test seems to increase drastically when the true mean increases from 0 to 2 and starts to slow down from 2 to 4. The plot seems to have minimal additional impact on power when the true mean values between 4 to 6. This relationship shows a concept in hypothesis test that a larger effect size makes the probability of correctly rejecting the null hypothesis/detecting the true effect higher. 
+
+
+Make a plot showing the average estimate of mu on the y axis and the true value of mu on the x axis. Overlay on the first the average estimate of mu only in samples for which the null was rejected on the y axis and the true value of mu on the x axis.
+```{r}
+estimate_plot <- proportion_results|>
+  ggplot(aes(x=mu)) + 
+  geom_point(aes(y = avg_mu_hat, color = "average estimate of mu")) +
+  geom_line(aes(y = avg_mu_hat, color = "average estimate of mu")) +
+  geom_point(aes(y = avg_mu_hat_reject, color = "average estimate of mu for rejected")) +
+  geom_line(aes(y = avg_mu_hat_reject, color = "average estimate of mu for rejected")) +
+  labs(
+    x = "true mean",
+    y = "average estimated mean")
+
+estimate_plot
+```
 
