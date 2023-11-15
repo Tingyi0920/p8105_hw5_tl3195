@@ -7,5 +7,41 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+	fig.width = 8, 
+  fig.height = 6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+#Problem 2
+```{r,show_col_types = FALSE}
+hw5_data=
+  tibble(list.files("./data"))|>
+  mutate(files=paste(list.files("./data")))
+
+read_data=function(x) {
+  data=read_csv(paste0("./data/", x))|>
+    mutate(files_names=x)
+}
+
+arm = map_df(hw5_data$files, read_data)
+
+arm
 ```
 
