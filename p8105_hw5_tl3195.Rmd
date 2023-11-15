@@ -64,4 +64,19 @@ arm_data
 ```
 
 
+Make a spaghetti plot showing observations on each subject over time.
+```{r}
+arm_data|>
+  ggplot(aes(week, arm_value, color=subject_id)) + 
+  geom_point() + geom_line(aes(group=subject_id), alpha=0.5) +
+  facet_grid(~file_names) +
+  labs(x="week", 
+       y="arm value",
+       title="Arm values on each subject from week 1 to week 8 in two groups", col="subject id")
+
+```
+
+
+
+
 
