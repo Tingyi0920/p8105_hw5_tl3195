@@ -131,3 +131,4 @@ estimate_plot <- proportion_results|>
 estimate_plot
 ```
 
+The sample average of mu_hat across tests for which the null is rejected is not approximately equal to the true value of mu. Specifically, the estimated estimated mean is higher than the true mean when the null hypothesis is rejected. This might be attributed to overestimate of effect size because of random sampling variability. 
