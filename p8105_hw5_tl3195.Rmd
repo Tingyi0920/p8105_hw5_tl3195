@@ -30,6 +30,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 #Problem 2
+Import data and iterate over file names and read in data
 ```{r,show_col_types = FALSE}
 hw5_data=
   tibble(list.files("./data"))|>
@@ -44,4 +45,23 @@ arm = map_df(hw5_data$files, read_data)
 
 arm
 ```
+
+Tidy the result
+```{r}
+arm_data=
+  arm|>
+  janitor::clean_names()|>
+  gather(value = arm_value, key = week, week_1:week_8)|>
+  mutate(
+    week=as.integer(str_remove(week, "week_")),
+    subject_id=as.integer(str_extract(files_names, "[0-9][0-9]")),
+    file_names = ifelse(str_detect(files_names, "con"), "Control", "Experiment"),
+  )|>
+  mutate(across(.cols = c(files_names, week, subject_id), as.factor)) |>
+  select(file_names, subject_id, week, arm_value)
+
+arm_data
+```
+
+
 
