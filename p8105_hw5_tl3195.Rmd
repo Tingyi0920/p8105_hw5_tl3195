@@ -80,7 +80,37 @@ There appears an general increasing trend in arm values over 8 weeks in experime
 
 
 #Problem 3
+Generate 5000 datasets from the model
+```{r}
+set.seed(1)
+n = 30
+sigma = 5
+mu_assigned = 0:6
+alpha = 0.05
+simulations = 5000
 
+sim_results = map_dfr(mu_assigned, function(mu) {
+  tibble(mu = mu,
+         sim = map(1:simulations, ~t.test(rnorm(n, mu, sigma))),
+         estimate = map_dbl(sim, ~broom::tidy(.x)$estimate),
+         p_value = map_dbl(sim, ~broom::tidy(.x)$p.value),
+         reject = p_value < alpha)
+})
+```
 
+Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of mu on the x axis.
+```{r}
+proportion_results <- sim_results |>
+  group_by(mu)|>
+  summarise(avg_mu_hat = mean(estimate),
+            avg_mu_hat_reject = mean(estimate[reject]),
+            power = mean(reject))
+plot = proportion_results|>
+  ggplot(aes(x = mu, y = power)) + geom_point() + geom_line() +
+  labs(x = "True mean",
+       y = "Power")
+
+plot
+```
 
 
