@@ -76,6 +76,10 @@ arm_data|>
 
 ```
 
+There appears an general increasing trend in arm values over 8 weeks in experiment group. In contrast, there is no clear pattern of arm values for each subject over 8 weeks in control group. Moreover, the largest arm value in control group is below 5.
+
+
+#Problem 3
 
 
 
