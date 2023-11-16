@@ -9,6 +9,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(p8105.datasets)
+library(viridis)
 
 knitr::opts_chunk$set(
   echo = TRUE,
@@ -28,6 +30,75 @@ options(
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
+
+#Problem 1
+
+```{r}
+homicide_df = 
+  read_csv("./homicide-data.csv", na = c("", "NA", "Unknown")) %>%
+  mutate(
+    city_state = str_c(city, state, sep = ", "),
+    resolution = case_when(
+      disposition == "Closed without arrest" ~ "unsolved",
+      disposition == "Open/No arrest"        ~ "unsolved",
+      disposition == "Closed by arrest"      ~ "solved"
+    )
+  ) |>
+  filter(city_state != "Tulsa, AL") 
+```
+
+The resulting dataframe has `r nrow(homicide_df)` entries and variables including the victim sex, race, age, and name; the date the homicide was reported; and the location of the homicide. A `city_state` variable was created that includes both city and state, and a `resolution` variable to indicate whether the case was closed by arrest. Tulsa, AL, was excluded from the dataset since it is not a major US city which could be viewed as a kind of error. 
+
+Summarize within cities to obtain the total number of homicides and the number of unsolved homicides.
+
+```{r}
+summarise_homicide_df = 
+  homicide_df |>
+  select(city_state, disposition, resolution) |>
+  group_by(city_state) |>
+  summarize(
+    hom_total = n(),
+    hom_unsolved = sum(resolution == "unsolved"))
+```
+
+
+`prop.test` and `broom::tidy` functions to obtain an estimate and CI of the proportion of unsolved homicides in Baltimore, MD.
+
+```{r}
+Baltimore = 
+  prop.test(
+    x = filter(summarise_homicide_df, city_state == "Baltimore, MD") |> pull(hom_unsolved),
+    n = filter(summarise_homicide_df, city_state == "Baltimore, MD") |> pull(hom_total)) 
+
+broom::tidy(Baltimore) |>
+  knitr::kable(digits = 3)
+```
+
+```{r}
+test_results = 
+  summarise_homicide_df |>
+  mutate(
+    prop_tests = map2(hom_unsolved, hom_total, \(x, y) prop.test(x = x, n = y)),
+    tidy_tests = map(prop_tests, broom::tidy)) |>
+  select(-prop_tests) |>
+  unnest(tidy_tests) |> 
+  select(city_state, estimate, conf.low, conf.high) |> 
+  mutate(city_state = fct_reorder(city_state, estimate))
+```
+
+Make a plot
+
+```{r}
+test_results |>
+  mutate(city_state = fct_reorder(city_state, estimate)) |>
+  ggplot(aes(x = city_state, y = estimate)) + 
+  geom_point() + 
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+
 
 #Problem 2
 
